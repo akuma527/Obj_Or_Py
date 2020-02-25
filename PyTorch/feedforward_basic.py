@@ -28,7 +28,8 @@ def blob_label(y, label, loc): # assign labels
     for l in loc:
         target[y == l] = label
     return target
-x_train, y_train = make_blobs(n_samples=40, n_features=2, cluster_std=1.5, shuffle=True)
+x_train, y_train = make_blobs(n_samples=40, n_features=2,
+ cluster_std=1.5, shuffle=True)
 x_train = torch.FloatTensor(x_train)
 y_train = torch.FloatTensor(blob_label(y_train, 0, [0]))
 y_train = torch.FloatTensor(blob_label(y_train, 1, [1,2,3]))
@@ -57,7 +58,7 @@ for epoch in range(epoch):
     y_pred = model(x_train)
     # Compute Loss
     loss = criterion(y_pred.squeeze(), y_train)
-   
+
     print('Epoch {}: train loss: {}'.format(epoch, loss.item()))
     # Backward pass
     loss.backward()

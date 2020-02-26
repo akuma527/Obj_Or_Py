@@ -29,11 +29,13 @@ def blob_label(y, label, loc): # assign labels
         target[y == l] = label
     return target
 x_train, y_train = make_blobs(n_samples=40, n_features=2,
- cluster_std=1.5, shuffle=True)
+ cluster_std=1.5, shuffle=True, random_state=42)
+
 x_train = torch.FloatTensor(x_train)
 y_train = torch.FloatTensor(blob_label(y_train, 0, [0]))
 y_train = torch.FloatTensor(blob_label(y_train, 1, [1,2,3]))
-x_test, y_test = make_blobs(n_samples=10, n_features=2, cluster_std=1.5, shuffle=True)
+x_test, y_test = make_blobs(n_samples=10, n_features=2,
+ cluster_std=1.5, shuffle=True, random_state=41)
 x_test = torch.FloatTensor(x_test)
 y_test = torch.FloatTensor(blob_label(y_test, 0, [0]))
 y_test = torch.FloatTensor(blob_label(y_test, 1, [1,2,3]))
@@ -50,16 +52,23 @@ before_train = criterion(y_pred.squeeze(), y_test)
 print('Test loss before training' , before_train.item())
 
 
-model.train()
-epoch = 20
+# model.train()
+epoch = 30
+correct = 0
 for epoch in range(epoch):
+    # Since Gradient accumulates
     optimizer.zero_grad()
     # Forward pass
     y_pred = model(x_train)
     # Compute Loss
     loss = criterion(y_pred.squeeze(), y_train)
+   
+    output = (y_pred.squeeze()>0.5).float()
+    correct += (output == y_train).float().sum()
+    accuracy = 100 * correct / len(x_train)
 
-    print('Epoch {}: train loss: {}'.format(epoch, loss.item()))
+    print('Epoch {}: loss: {} Acc: {}'.format(epoch, loss.item(), accuracy))
     # Backward pass
     loss.backward()
     optimizer.step()
+    correct=0

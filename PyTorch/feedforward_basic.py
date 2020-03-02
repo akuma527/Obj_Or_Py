@@ -4,7 +4,7 @@ import numpy
 class Feedforward(torch.nn.Module):
         
         def __init__(self, input_size, hidden_size):
-            super(Feedforward, self).__init__()
+            super().__init__()
             self.input_size = input_size
             self.hidden_size  = hidden_size
             self.fc1 = torch.nn.Linear(self.input_size, self.hidden_size)
@@ -41,7 +41,7 @@ y_test = torch.FloatTensor(blob_label(y_test, 0, [0]))
 y_test = torch.FloatTensor(blob_label(y_test, 1, [1,2,3]))
 
 # Initialize Model
-model = Feedforward(2, 10)
+model = Feedforward(2, 3)
 criterion = torch.nn.BCELoss()
 optimizer = torch.optim.SGD(model.parameters(), lr = 0.01)
 
@@ -72,3 +72,6 @@ for epoch in range(epoch):
     loss.backward()
     optimizer.step()
     correct=0
+
+# for name,param in model.named_parameters():
+#     print(name, param.shape)
